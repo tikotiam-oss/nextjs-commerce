@@ -1,0 +1,123 @@
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Upload } from "lucide-react";
+
+export default function TShirtCustomizer() {
+  const [phone, setPhone] = useState("");
+  const [fabric, setFabric] = useState("");
+  const [tshirt, setTshirt] = useState("");
+  const [image, setImage] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    if (/^((\+213)|0)(5|6|7)[0-9]{8}$/.test(phone)) {
+      setLoggedIn(true);
+    } else {
+      alert("⚠️ Please enter a valid Algerian phone number.");
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto mt-10">
+      {!loggedIn ? (
+        <Card className="p-6 bg-blue-950 text-white">
+          <CardContent>
+            <h2 className="text-xl font-bold mb-4"># Login</h2>
+            <Input
+              placeholder="Algerian phone number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="mb-4 bg-black text-white border-blue-700"
+            />
+            <Button
+              onClick={handleLogin}
+              className="w-full bg-green-700 hover:bg-green-600"
+            >
+              Login
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="p-6 bg-blue-950 text-white">
+          <CardContent>
+            <h2 className="text-xl font-bold mb-6">✦ Customize Your T-Shirt ✦</h2>
+
+            {/* Select Fabric */}
+            <div className="mb-4">
+              <label className="block mb-2">Choose Fabric</label>
+              <Select onValueChange={setFabric}>
+                <SelectTrigger className="bg-black text-white border-blue-700">
+                  <SelectValue placeholder="Select fabric" />
+                </SelectTrigger>
+                <SelectContent className="bg-blue-950 text-white">
+                  <SelectItem value="cotton">Cotton</SelectItem>
+                  <SelectItem value="polyester">Polyester</SelectItem>
+                  <SelectItem value="mixed">Mixed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Select T-Shirt Type */}
+            <div className="mb-4">
+              <label className="block mb-2">Choose T-Shirt Type</label>
+              <Select onValueChange={setTshirt}>
+                <SelectTrigger className="bg-black text-white border-blue-700">
+                  <SelectValue placeholder="Select T-Shirt" />
+                </SelectTrigger>
+                <SelectContent className="bg-blue-950 text-white">
+                  <SelectItem value="round">Round Neck</SelectItem>
+                  <SelectItem value="vneck">V-Neck</SelectItem>
+                  <SelectItem value="polo">Polo</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Upload Image */}
+            <div className="mb-4">
+              <label className="block mb-2">Upload an Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="upload"
+              />
+              <label
+                htmlFor="upload"
+                className="flex items-center gap-2 bg-blue-800 hover:bg-blue-700 cursor-pointer py-2 px-4 rounded-lg"
+              >
+                <Upload size={18} /> Upload Image
+              </label>
+              {image && (
+                <img
+                  src={image}
+                  alt="preview"
+                  className="mt-4 w-full rounded-lg border border-blue-700"
+                />
+              )}
+            </div>
+
+            <Button className="w-full bg-green-700 hover:bg-green-600">
+              Confirm Order
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
